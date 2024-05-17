@@ -1,9 +1,12 @@
 .text-updater-node {
-  height: 150px;
+  /* height: 150px; */
   border: 1px solid #eee;
   padding: 5px;
   border-radius: 25px;
   background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .text-updater-node label {

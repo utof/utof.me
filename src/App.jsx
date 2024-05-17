@@ -4,12 +4,10 @@ import RFcomponent from "./components/RFComponent.jsx";
 
 function App() {
   return (
-    <>
+    <div style={{ width: "100%", height: "100%", background: "red" }}>
       <RFcomponent />
-      {/* <div style={{ width: "700", height: "700" }}>
-        <DnDFlow />
-      </div> */}
-    </>
+      {/* <motion.div>klajsdffajlk;slj;k</motion.div> */}
+    </div>
   );
 }
 

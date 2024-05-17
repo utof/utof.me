@@ -3,11 +3,8 @@ import ReactFlow, {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  // getNodesBounds,
-  useStore,
-  useReactFlow,
+  MiniMap,
   ReactFlowProvider,
-  useViewport,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -17,38 +14,26 @@ import "./text-updater-node.css";
 
 const rfStyle = {
   backgroundColor: "#B8CEFF",
+  width: "100%",
+  height: "100%",
 };
 const nodeTypes = { textUpdater: TextUpdaterNode };
 
-function RFNoContext({ width = "1000px", height = "1000px" }) {
-  const reactFlowWrapper = useRef(null);
+function RFNoContext() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
   // const reactFlow = useReactFlow();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
-
-  useEffect(() => {
-    const handleScroll = (event) => {
-      if (!event.ctrlKey) {
-        // Scroll the main page
-        window.scrollBy(0, event.deltaY);
-        // Prevent the default scroll behavior on the reactFlowWrapper
-        event.preventDefault();
-      }
-    };
-
-    const wrapper = reactFlowWrapper.current;
-    if (wrapper) {
-      wrapper.addEventListener("wheel", handleScroll);
+  const handleWheel = (event) => {
+    console.log(event);
+    if (!event.ctrlKey) {
+      // Scroll the main page
+      window.scrollBy(0, event.deltaY);
+      // Prevent the default scroll behavior on the reactFlowWrapper
+      event.preventDefault();
     }
-
-    return () => {
-      if (wrapper) {
-        wrapper.removeEventListener("wheel", handleScroll);
-      }
-    };
-  }, []);
+  };
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -87,16 +72,10 @@ function RFNoContext({ width = "1000px", height = "1000px" }) {
         Date.now() - window.clickTime < 300
       ) {
         window.clickTime = null;
-        const xPos = event.clientX;
-        const yPos = event.clientY;
         const position = reactFlowInstance.screenToFlowPosition({
           x: event.clientX,
           y: event.clientY,
-        }); // todo F5+react-refresh bug
-        console.log(reactFlowInstance);
-        console.log(xPos, yPos, "old position");
-        console.log(position.x, position.y, "new position");
-
+        });
         setNodes((nds) => {
           const newNode = {
             id: `${nds.length}`,
@@ -115,8 +94,13 @@ function RFNoContext({ width = "1000px", height = "1000px" }) {
 
   return (
     <div
-      style={{ width: width, height: height, overflow: "auto" }}
-      ref={reactFlowWrapper}
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "white",
+        // overflow: "scroll",
+      }}
+      onWheel={handleWheel}
     >
       <ReactFlow
         nodes={nodes}
@@ -124,16 +108,19 @@ function RFNoContext({ width = "1000px", height = "1000px" }) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onPane
         nodeTypes={nodeTypes}
         onPaneClick={onPaneClick}
         onInit={setReactFlowInstance}
+        defaultViewport={defaultViewport}
         zoomOnScroll={false}
         zoomActivationKeyCode={"Control"}
-        // panOnScroll={false}
-        // fitView
         zoomOnDoubleClick={false}
         style={rfStyle}
+        connectionMode="loose"
       />
+
+      {/* <button onClick={() => console.log(nodes, edges)}>Log</button> */}
     </div>
   );
 }
@@ -154,25 +141,70 @@ const initialNodes = [
     id: "0",
     type: "textUpdater",
     position: { x: 0, y: 0 },
-    data: { value: 123 },
+    data: { value: 0 },
   },
   {
     id: "1",
-    type: "output",
-    targetPosition: "top",
-    position: { x: 0, y: 200 },
-    data: { label: "node 2" },
+    type: "textUpdater",
+    position: { x: -1000, y: 0 },
+    data: { value: 1 },
   },
   {
     id: "2",
-    type: "output",
-    targetPosition: "top",
-    position: { x: 200, y: 200 },
-    data: { label: "node 3" },
+    type: "textUpdater",
+    position: { x: 1000, y: 0 },
+    data: { value: 2 },
+  },
+  {
+    id: "3",
+    type: "textUpdater",
+    position: { x: 0, y: -1000 },
+    data: { value: 3 },
+  },
+  {
+    id: "4",
+    type: "textUpdater",
+    position: { x: 0, y: 1000 },
+    data: { value: 4 },
   },
 ];
 
 const initialEdges = [
-  { id: "edge-1", source: "node-1", target: "node-2", sourceHandle: "a" },
-  { id: "edge-2", source: "node-1", target: "node-3", sourceHandle: "b" },
+  {
+    id: "edge-0-1",
+    source: "0",
+    target: "1",
+    sourceHandle: "l",
+    targetHandle: "r",
+  },
+  {
+    id: "edge-0-2",
+    source: "0",
+    target: "2",
+    sourceHandle: "r",
+    targetHandle: "l",
+  },
+  {
+    id: "edge-0-3",
+    source: "0",
+    target: "3",
+    sourceHandle: "t",
+    targetHandle: "b",
+  },
+  {
+    id: "edge-0-4",
+    source: "0",
+    target: "4",
+    // animated: true,
+    sourceHandle: "b",
+    targetHandle: "t",
+  },
 ];
+const centerNode = initialNodes.find((node) => node.id === "0");
+const defaultViewport = {
+  x: centerNode.position.x,
+  y: centerNode.position.y,
+  zoom: 1,
+};
+
+// export { initialNodes, initialEdges };
