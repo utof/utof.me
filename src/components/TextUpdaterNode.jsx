@@ -4,46 +4,71 @@ import { Handle, Position } from "reactflow";
 
 // const handleStyle = { left: 10 };
 
-// import "./text-updater-node.css";
+import "../styles/kbbtn.css";
+
 import { motion } from "framer-motion";
+import UText from "./UText.jsx";
+import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
 
 function TextUpdaterNode({ data, isConnectable }) {
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
+  // const onChange = useCallback((evt) => {
+  //   console.log(evt.target.value);
+  // }, []);
   const [isExpanded, setIsExpanded] = useState(false);
+  const scaleFactor = 2;
+  const hoverFactor = 1.03;
+  const dimensions = { width: 200, height: 200 }; // TODO useDimensions hook to read the size of the screen and set w n h  for this thing
 
   return (
     <motion.div
-      className="text-updater-node"
+      // drag // TOOD make this work with react-flow
+      className="bg-white rounded-3xl p-4 "
+      // className={`bg-white rounded-3xl ${kkjhasdf ? "flex-row" : "Awsd"} p-4` }
+
+      // onFocus={() => {
+      //   setIsExpanded(true);
+      // }} // TOOD weird bug
+
       onClick={() => {
         setIsExpanded(!isExpanded);
       }}
+      // whileInView={{ scale: 1.2 }}
+      whileHover={{
+        scale: isExpanded ? scaleFactor * hoverFactor : hoverFactor,
+        // transition: { duration: 0.2, ease: "easeIn" },
+      }}
+      // onHoverEnd={{ scale: hoverFactor, transition: { duration: 0.2 } }}
+      whileTap={{
+        scale: isExpanded
+          ? scaleFactor * hoverFactor + 0.02
+          : 0.9 - (1 - hoverFactor),
+      }}
       initial={{
-        width: 200,
-        height: 200,
+        width: dimensions.width,
+        height: dimensions.height,
       }}
       animate={{
-        // width: isExpanded ? 400 : 200,
-        // height: isExpanded ? 400 : 200,
-        scale: isExpanded ? 2 : 1,
+        scale: isExpanded ? scaleFactor : 1,
+        width: isExpanded ? 400 : dimensions.width,
+        translateX: isExpanded ? -dimensions.width / 2 : 0,
       }}
     >
-      <Handle
-        // type="source"
-        position={Position.Top}
-        id="t"
-        isConnectable={isConnectable}
-      />
-      <div style={{}}>
-        <label htmlFor="text">Text:</label>
-        <input id="text" name="text" onChange={onChange} className="nodrag" />
+      <Handle position={Position.Top} id="t" isConnectable={isConnectable}>
+        <ArrowkeyBtn />
+      </Handle>
+
+      <div
+        // className="align-top"
+        onClick={(e) => {
+          // e.stopPropagation();
+        }}
+      >
+        <UText />
       </div>
       <Handle
         type="source"
         position={Position.Left}
         id="l"
-        // style={handleStyle}
         isConnectable={isConnectable}
       />
       <Handle
@@ -64,14 +89,14 @@ function TextUpdaterNode({ data, isConnectable }) {
 
 export default TextUpdaterNode;
 
-// const styles = css`
-//   .text-updater-node {
+// const styles =
+//   text-updater-node
 //     height: 50px;
 //     border: 1px solid #eee;
 //     padding: 5px;
 //     border-radius: 5px;
 //     background: white;
-//   }
+//
 
 //   .text-updater-node label {
 //     display: block;

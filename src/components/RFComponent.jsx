@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import ReactFlow, {
   addEdge,
   applyEdgeChanges,
@@ -9,24 +9,24 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 
 import TextUpdaterNode from "./TextUpdaterNode.jsx";
-
-import "./text-updater-node.css";
+import useDimensions from "../hooks/useDimensions.jsx";
 
 const rfStyle = {
-  backgroundColor: "#B8CEFF",
+  backgroundColor: "#ffb8b8",
   width: "100%",
   height: "100%",
 };
 const nodeTypes = { textUpdater: TextUpdaterNode };
 
 function RFNoContext() {
+  const { dimensions, divRef, isInitialized } = useDimensions();
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
   // const reactFlow = useReactFlow();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const handleWheel = (event) => {
-    console.log(event);
+    // console.log(event);
     if (!event.ctrlKey) {
       // Scroll the main page
       window.scrollBy(0, event.deltaY);
@@ -48,20 +48,15 @@ function RFNoContext() {
     [setEdges]
   );
 
-  // useEffect(() => {
-  //   const mousepos = (e) => {
-  //     // e.preventDefault();
+  const defaultViewport = useMemo(() => {
+    console.log(dimensions, centerNode.position);
 
-  //     console.log(e.clientX, e.clientY);
-  //     console.log(
-  //       reactFlowInstance.screenToFlowPosition({ x: e.clientX, y: e.clientY })
-  //     );
-  //   };
-  //   window.addEventListener("mousemove", mousepos);
-  //   return () => {
-  //     window.removeEventListener("mousemove", mousepos);
-  //   };
-  // }, []);
+    return {
+      x: centerNode.position.x + dimensions.width / 2 - 200 / 2, // TODO make find the dimensions of div from parents
+      y: centerNode.position.y + dimensions.height / 2 - 200 / 2, // TOOD find the dims of the node
+      zoom: 1,
+    };
+  }, [dimensions]);
 
   const onPaneClick = useCallback(
     (event) => {
@@ -101,31 +96,34 @@ function RFNoContext() {
         // overflow: "scroll",
       }}
       onWheel={handleWheel}
+      ref={divRef}
     >
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onPane
-        nodeTypes={nodeTypes}
-        onPaneClick={onPaneClick}
-        onInit={setReactFlowInstance}
-        defaultViewport={defaultViewport}
-        zoomOnScroll={false}
-        zoomActivationKeyCode={"Control"}
-        zoomOnDoubleClick={false}
-        style={rfStyle}
-        connectionMode="loose"
-      />
+      {isInitialized && (
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onPane
+          nodeTypes={nodeTypes}
+          onPaneClick={onPaneClick}
+          onInit={setReactFlowInstance}
+          defaultViewport={defaultViewport}
+          zoomOnScroll={false}
+          zoomActivationKeyCode={"Control"}
+          zoomOnDoubleClick={false}
+          style={rfStyle}
+          connectionMode="loose"
+        />
+      )}
 
       {/* <button onClick={() => console.log(nodes, edges)}>Log</button> */}
     </div>
   );
 }
 
-function RFComponent() {
+function RFComponent({ width = "100%", height = "100%" }) {
   return (
     <ReactFlowProvider>
       <RFNoContext />
@@ -201,10 +199,5 @@ const initialEdges = [
   },
 ];
 const centerNode = initialNodes.find((node) => node.id === "0");
-const defaultViewport = {
-  x: centerNode.position.x,
-  y: centerNode.position.y,
-  zoom: 1,
-};
 
 // export { initialNodes, initialEdges };

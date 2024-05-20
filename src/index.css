@@ -1,9 +1,16 @@
+@import "./assets/fonts/fonts.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 #root,
 body,
 html {
   margin: 0;
   width: 100%;
   height: 100%;
+  font-family: "FTBlank", sans-serif; /* make it bold by default */
+  font-weight: 700;
 }
 
 :root {
@@ -34,9 +41,9 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  /* min-width: 320px; */
   /* overflow: hidden; */
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
 h1 {

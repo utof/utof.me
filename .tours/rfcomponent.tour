@@ -1,0 +1,32 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "RFComponent",
+  "steps": [
+    {
+      "file": "src/components/RFcomponent.jsx",
+      "description": "useeffect record positions\r\n\r\n  // useEffect(() => {\r\n  //   const mousepos = (e) => {\r\n  //     // e.preventDefault();\r\n\r\n  //     console.log(e.clientX, e.clientY);\r\n  //     console.log(\r\n  //       reactFlowInstance.screenToFlowPosition({ x: e.clientX, y: e.clientY })\r\n  //     );\r\n  //   };\r\n  //   window.addEventListener(\"mousemove\", mousepos);\r\n  //   return () => {\r\n  //     window.removeEventListener(\"mousemove\", mousepos);\r\n  //   };\r\n  // }, []);",
+      "line": 63,
+      "selection": {
+        "start": {
+          "line": 3,
+          "character": 1
+        },
+        "end": {
+          "line": 16,
+          "character": 13
+        }
+      }
+    },
+    {
+      "file": "src/App.jsx",
+      "description": "// const styles = css`\r\n//   .froggy2 {\r\n//     width: 100px;\r\n//     height: 100px;\r\n//     background: green;\r\n//   }\r\n// `;\r\n// // wont work",
+      "line": 22
+    },
+    {
+      "file": "src/App.jsx",
+      "description": "a",
+      "line": 14
+    }
+  ],
+  "ref": "main"
+}
