@@ -1,26 +1,34 @@
-import { useCallback, useState } from "react";
+import { motion } from "framer-motion";
+import { useState, useRef } from "react";
 import { Handle, Position } from "reactflow";
-// import { css } from "@emotion/css";
 
-// const handleStyle = { left: 10 };
-
+import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
+import UText from "./UText.jsx";
 import "../styles/kbbtn.css";
 
-import { motion } from "framer-motion";
-import UText from "./UText.jsx";
-import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
+// TODO in the future: generalize this node.
 
 function TextUpdaterNode({ data, isConnectable }) {
-  // const onChange = useCallback((evt) => {
-  //   console.log(evt.target.value);
-  // }, []);
+  // const store = useStoreApi();
+  const divRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
+
   const scaleFactor = 2;
   const hoverFactor = 1.03;
   const dimensions = { width: 200, height: 200 }; // TODO useDimensions hook to read the size of the screen and set w n h  for this thing
 
+  const handleClick = () => {
+    setIsExpanded(!isExpanded);
+    if (divRef.current) {
+      divRef.current.focus(); // below changing the border and radius
+      // divRef.current.style.borderRadius = "1000px";
+      divRef.current.style.border = "2px solid #005eff";
+    }
+  };
+
   return (
     <motion.div
+      ref={divRef}
       // drag // TOOD make this work with react-flow
       className="bg-white rounded-3xl p-4 "
       // className={`bg-white rounded-3xl ${kkjhasdf ? "flex-row" : "Awsd"} p-4` }
@@ -28,10 +36,8 @@ function TextUpdaterNode({ data, isConnectable }) {
       // onFocus={() => {
       //   setIsExpanded(true);
       // }} // TOOD weird bug
-
-      onClick={() => {
-        setIsExpanded(!isExpanded);
-      }}
+      tabIndex={-1}
+      onClick={handleClick}
       // whileInView={{ scale: 1.2 }}
       whileHover={{
         scale: isExpanded ? scaleFactor * hoverFactor : hoverFactor,
@@ -51,6 +57,12 @@ function TextUpdaterNode({ data, isConnectable }) {
         scale: isExpanded ? scaleFactor : 1,
         width: isExpanded ? 400 : dimensions.width,
         translateX: isExpanded ? -dimensions.width / 2 : 0,
+      }} // on arrowkey up make it bigger
+      onKeyDown={(e) => {
+        if (e.key === "ArrowUp") {
+          // handleTransitionToNode();
+          setIsExpanded(true);
+        }
       }}
     >
       <Handle position={Position.Top} id="t" isConnectable={isConnectable}>
