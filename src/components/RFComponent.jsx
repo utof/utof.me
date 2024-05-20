@@ -10,6 +10,8 @@ import "reactflow/dist/style.css";
 
 import TextUpdaterNode from "./TextUpdaterNode.jsx";
 import useDimensions from "../hooks/useDimensions.jsx";
+import useFocusNode from "../hooks/useFocusNode.jsx";
+// import { getEdgesByHandle, getNbrsByHandle } from "../util/elementgetters.js";
 
 const rfStyle = {
   backgroundColor: "#ffb8b8",
@@ -19,12 +21,31 @@ const rfStyle = {
 const nodeTypes = { textUpdater: TextUpdaterNode };
 
 function RFNoContext() {
-  const { dimensions, divRef, isInitialized } = useDimensions();
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [selectedNode, setSelectedNode] = useState("0");
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-  // const reactFlow = useReactFlow();
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  // const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  const { dimensions, divRef, isInitialized } = useDimensions();
+  const useFocus = useFocusNode();
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowUp") {
+        const neigbours = getNbrsByHandle(selectedNode, "t");
+        console.log(JSON.stringify("ne", neigbours));
+        const first_neighbour = Object.keys(neigbours)[0]; // TODO p4 generalize to multiple nodes when multiple edges
+        useFocus(first_neighbour); // TODO why is this bad? - 20.05
+        setSelectedNode(first_neighbour);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedNode, edges, reactFlowInstance]); // chatgpt decided to add edges here, why...? im concerned
+
   const handleWheel = (event) => {
     // console.log(event);
     if (!event.ctrlKey) {
@@ -49,8 +70,7 @@ function RFNoContext() {
   );
 
   const defaultViewport = useMemo(() => {
-    console.log(dimensions, centerNode.position);
-
+    // TODO get from  reactflowinstance ??? - 20.05
     return {
       x: centerNode.position.x + dimensions.width / 2 - 200 / 2, // TODO make find the dimensions of div from parents
       y: centerNode.position.y + dimensions.height / 2 - 200 / 2, // TOOD find the dims of the node
@@ -81,11 +101,47 @@ function RFNoContext() {
           return [...nds, newNode];
         });
       } else {
+        console.log("edges", getEdgesByHandle(selectedNode, "b"));
         window.clickTime = Date.now();
       }
     },
     [reactFlowInstance]
   );
+
+  const getEdgesByNode = (nodeId) => {
+    const edges = reactFlowInstance.getEdges();
+    const neighbours = edges.filter(
+      (edge) => edge.target === nodeId || edge.source === nodeId
+    );
+    // return JSON.stringify(neighbours);
+    return neighbours;
+  };
+
+  const getEdgesByHandle = (nodeId, handleId) => {
+    const edges = getEdgesByNode(nodeId);
+    const handleEdges = edges.filter(
+      (edge) =>
+        (edge.target === nodeId && edge.targetHandle === handleId) ||
+        (edge.source === nodeId && edge.sourceHandle === handleId)
+    );
+    return handleEdges;
+  };
+
+  const getNbrsByHandle = (nodeId, handleId) => {
+    const edges = getEdgesByHandle(nodeId, handleId);
+    const nbrs = {};
+
+    for (const edgeId in edges) {
+      const edge = edges[edgeId];
+      if (edge.source === nodeId) {
+        nbrs[edge.target] = edge;
+      } else if (edge.target === nodeId) {
+        nbrs[edge.source] = edge;
+      }
+    }
+
+    return nbrs;
+  };
 
   return (
     <div
@@ -108,7 +164,7 @@ function RFNoContext() {
           onPane
           nodeTypes={nodeTypes}
           onPaneClick={onPaneClick}
-          onInit={setReactFlowInstance}
+          onInit={setReactFlowInstance} // TODO  check docs but how do i make it equal setReactFlowInstance but run a sideeffect?
           defaultViewport={defaultViewport}
           zoomOnScroll={false}
           zoomActivationKeyCode={"Control"}
