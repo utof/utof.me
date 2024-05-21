@@ -11,6 +11,7 @@ import "reactflow/dist/style.css";
 import TextUpdaterNode from "./TextUpdaterNode.jsx";
 import useDimensions from "../hooks/useDimensions.jsx";
 import useFocusNode from "../hooks/useFocusNode.jsx";
+import { saveToJsonFile } from "../util/rfdatasaver.js";
 // import { getEdgesByHandle, getNbrsByHandle } from "../util/elementgetters.js";
 
 const rfStyle = {
@@ -124,7 +125,9 @@ function RFNoContext() {
             position: { x: position.x, y: position.y },
             data: { value: 123 },
           };
-          return [...nds, newNode];
+          const updatedNodes = [...nds, newNode];
+          saveToJsonFile(updatedNodes, edges);
+          return updatedNodes;
         });
       } else {
         console.log("edges", getEdgesByHandle(selectedNode, "b"));
