@@ -38,7 +38,7 @@ function TextUpdaterNode({ isConnectable, selected }) {
 
   return (
     <>
-      <NodeResizer
+      <NodeResizer // TODO p3 use NodeResizeControl instead of NodeResizer
         color="#ff0071"
         isVisible={selected}
         // isVisible={true}
