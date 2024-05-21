@@ -29,13 +29,34 @@ function RFNoContext() {
   const { dimensions, divRef, isInitialized } = useDimensions();
   const useFocus = useFocusNode();
 
-  useEffect(() => {
+  const handleKeyDirection = () => {
+    // TODO_I how to move this out of here? - 20.05
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowUp") {
-        const neigbours = getNbrsByHandle(selectedNode, "t");
-        console.log(JSON.stringify("ne", neigbours));
-        const first_neighbour = Object.keys(neigbours)[0]; // TODO p4 generalize to multiple nodes when multiple edges
-        useFocus(first_neighbour); // TODO why is this bad? - 20.05
+      let directionKey = null;
+
+      switch (event.key) {
+        case "ArrowLeft":
+          directionKey = "l";
+          break;
+        case "ArrowRight":
+          directionKey = "r";
+          break;
+        case "ArrowUp":
+          directionKey = "t";
+          break;
+        case "ArrowDown":
+          directionKey = "b";
+          break;
+        default:
+          return;
+      }
+      event.preventDefault(); // Prevent the default scroll behavior on the reactFlowWrapper
+      const neighbours = getNbrsByHandle(selectedNode, directionKey);
+      console.log(JSON.stringify("ne", neighbours));
+      console.log(neighbours);
+      const first_neighbour = Object.keys(neighbours)[0]; // TODO p4 generalize to multiple nodes when multiple edges
+      useFocus(first_neighbour); // TODO_I why is this bad? - 20.05
+      if (first_neighbour) {
         setSelectedNode(first_neighbour);
       }
     };
@@ -44,7 +65,12 @@ function RFNoContext() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedNode, edges, reactFlowInstance]); // chatgpt decided to add edges here, why...? im concerned
+  };
+
+  useEffect(() => {
+    const cleanup = handleKeyDirection();
+    return () => cleanup();
+  }, [selectedNode, edges, reactFlowInstance]); // TODO_I  why it made edges a dependency? - 20.05
 
   const handleWheel = (event) => {
     // console.log(event);
@@ -70,7 +96,7 @@ function RFNoContext() {
   );
 
   const defaultViewport = useMemo(() => {
-    // TODO get from  reactflowinstance ??? - 20.05
+    // TODO_I get from  reactflowinstance ??? - 20.05
     return {
       x: centerNode.position.x + dimensions.width / 2 - 200 / 2, // TODO make find the dimensions of div from parents
       y: centerNode.position.y + dimensions.height / 2 - 200 / 2, // TOOD find the dims of the node
@@ -109,6 +135,7 @@ function RFNoContext() {
   );
 
   const getEdgesByNode = (nodeId) => {
+    // TODO_I how to move them to util/elementgetters.js ?
     const edges = reactFlowInstance.getEdges();
     const neighbours = edges.filter(
       (edge) => edge.target === nodeId || edge.source === nodeId
@@ -196,6 +223,7 @@ const initialNodes = [
     type: "textUpdater",
     position: { x: 0, y: 0 },
     data: { value: 0 },
+    selected: false,
   },
   {
     id: "1",

@@ -5,6 +5,7 @@ const useFocusNode = () => {
   const { setCenter } = useReactFlow();
 
   const focusNode = (nodeIndex) => {
+    // TODO_I why not input on the outside?
     const { nodeInternals } = store.getState();
     const nodes = Array.from(nodeInternals).map(([, node]) => node);
 
@@ -14,7 +15,7 @@ const useFocusNode = () => {
       const x = node.position.x + node.width / 2;
       const y = node.position.y + node.height / 2;
 
-      setCenter(x, y, { duration: 1000 });
+      setCenter(x, y, { duration: 700, zoom: 1 });
     }
   };
 

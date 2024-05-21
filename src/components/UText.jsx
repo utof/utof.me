@@ -16,10 +16,10 @@ function uText() {
       </p>
       <p className="text-m font-light" style={{ wordBreak: "break-word" }}>
         The quick brown fox jumps ofver the layuz
-        doblasdfjklasdfjkl;adfjkls;asdfjkl;adjkl;fsasdjklf;klj;dafsklj;adfsklj;sdflk;jfdasjkl;asdflk;
+        {/* doblasdfjklasdfjkl;adfjkls;asdfjkl;adjkl;fsasdjklf;klj;dafsklj;adfsklj;sdflk;jfdasjkl;asdflk;
         asl;lja ks;lkjasjkl;sfadkl;asd k;ljasd;ljksadfjl;ksdaf kl;sad;klj
         dsfk;jl asdklj;fasjkl; asdf;jkla dfsjkl;fsdklj;
-        fsd;lkafsdklj;adfkls;jadf jkl;lkdfs;ljk;fds
+        fsd;lkafsdklj;adfkls;jadf jkl;lkdfs;ljk;fds */}
       </p>
     </div>
   );

@@ -1,6 +1,12 @@
 import { motion } from "framer-motion";
-import { useState, useRef } from "react";
-import { Handle, Position } from "reactflow";
+import { useState, useRef, memo } from "react";
+import {
+  Handle,
+  Position,
+  useReactFlow,
+  NodeResizer,
+  NodeToolbar,
+} from "reactflow";
 
 import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
 import UText from "./UText.jsx";
@@ -8,98 +14,133 @@ import "../styles/kbbtn.css";
 
 // TODO in the future: generalize this node.
 
-function TextUpdaterNode({ data, isConnectable }) {
+function TextUpdaterNode({ isConnectable, selected }) {
   // const store = useStoreApi();
+  const { setCenter } = useReactFlow(); // TODO_I gotta put elementgetters b4 this - 21.05
   const divRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const scaleFactor = 2;
   const hoverFactor = 1.03;
   const dimensions = { width: 200, height: 200 }; // TODO useDimensions hook to read the size of the screen and set w n h  for this thing
+  const _disableAnimations = false;
 
   const handleClick = () => {
     setIsExpanded(!isExpanded);
     if (divRef.current) {
-      divRef.current.focus(); // below changing the border and radius
-      // divRef.current.style.borderRadius = "1000px";
+      // divRef.current.focus();
       divRef.current.style.border = "2px solid #005eff";
+      if (selected) {
+        divRef.current.style.border = "2px solid #ff0071";
+      }
     }
   };
 
   return (
-    <motion.div
-      ref={divRef}
-      // drag // TOOD make this work with react-flow
-      className="bg-white rounded-3xl p-4 "
-      // className={`bg-white rounded-3xl ${kkjhasdf ? "flex-row" : "Awsd"} p-4` }
+    <>
+      <NodeResizer
+        color="#ff0071"
+        isVisible={selected}
+        // isVisible={true}
+        // handleStyle={{ width: 300, height: 300 }}
+        minWidth={100}
+        minHeight={100}
+        // style={}
+      />
+      <NodeToolbar isVisible={selected} position={Position.Top}>
+        <ArrowkeyBtn text="↑" />
+      </NodeToolbar>
+      <NodeToolbar isVisible={selected} position={Position.Left}>
+        <ArrowkeyBtn text="←" />
+      </NodeToolbar>
+      <NodeToolbar isVisible={selected} position={Position.Right}>
+        <ArrowkeyBtn text="→" />
+      </NodeToolbar>
+      <NodeToolbar isVisible={selected} position={Position.Bottom}>
+        <ArrowkeyBtn text="↓" />
+      </NodeToolbar>
+      <motion.div
+        ref={divRef} // TODO_I stop fucking screaming at me for using ref inside motion.div (check console)
+        style={{ width: "100%", height: "100%", overflow: "hidden" }}
+        // drag // TOOD make this work with react-flow
+        className="bg-white rounded-3xl p-4 "
+        // className={`bg-white rounded-3xl ${kkjhasdf ? "flex-row" : "Awsd"} p-4` }
 
-      // onFocus={() => {
-      //   setIsExpanded(true);
-      // }} // TOOD weird bug
-      tabIndex={-1}
-      onClick={handleClick}
-      // whileInView={{ scale: 1.2 }}
-      whileHover={{
-        scale: isExpanded ? scaleFactor * hoverFactor : hoverFactor,
-        // transition: { duration: 0.2, ease: "easeIn" },
-      }}
-      // onHoverEnd={{ scale: hoverFactor, transition: { duration: 0.2 } }}
-      whileTap={{
-        scale: isExpanded
-          ? scaleFactor * hoverFactor + 0.02
-          : 0.9 - (1 - hoverFactor),
-      }}
-      initial={{
-        width: dimensions.width,
-        height: dimensions.height,
-      }}
-      animate={{
-        scale: isExpanded ? scaleFactor : 1,
-        width: isExpanded ? 400 : dimensions.width,
-        translateX: isExpanded ? -dimensions.width / 2 : 0,
-      }} // on arrowkey up make it bigger
-      onKeyDown={(e) => {
-        if (e.key === "ArrowUp") {
-          // handleTransitionToNode();
-          setIsExpanded(true);
-        }
-      }}
-    >
-      <Handle position={Position.Top} id="t" isConnectable={isConnectable}>
-        <ArrowkeyBtn />
-      </Handle>
-
-      <div
-        // className="align-top"
-        onClick={(e) => {
-          // e.stopPropagation();
+        // onFocus={() => {
+        //   setIsExpanded(true);
+        // }} // TOOD weird bug
+        // tabIndex={-1}
+        onClick={handleClick}
+        // whileInView={{ scale: 1.2 }}
+        whileHover={{
+          scale: isExpanded ? scaleFactor * hoverFactor : hoverFactor,
+          // transition: { duration: 0.2, ease: "easeIn" },
+        }}
+        // onHoverEnd={{ scale: hoverFactor, transition: { duration: 0.2 } }}
+        whileTap={{
+          scale: isExpanded
+            ? scaleFactor * hoverFactor + 0.02
+            : 0.9 - (1 - hoverFactor),
+        }}
+        initial={{
+          width: dimensions.width,
+          height: dimensions.height,
+        }}
+        animate={{
+          scale: isExpanded ? scaleFactor : 1,
+          width: isExpanded ? 400 : dimensions.width,
+          translateX: isExpanded ? -dimensions.width / 2 : 0,
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowUp") {
+            // handleTransitionToNode();
+            // do nothing (return nothing) below
+            return;
+          }
         }}
       >
-        <UText />
-      </div>
-      <Handle
-        type="source"
-        position={Position.Left}
-        id="l"
-        isConnectable={isConnectable}
-      />
-      <Handle
-        // type="source"
-        position={Position.Right}
-        id="r"
-        isConnectable={isConnectable}
-      />
-      <Handle
-        // type="source"
-        position={Position.Bottom}
-        id="b"
-        isConnectable={isConnectable}
-      />
-    </motion.div>
+        <Handle position={Position.Top} id="t" isConnectable={isConnectable}>
+          {/* <ArrowkeyBtn /> */}
+        </Handle>
+
+        <div
+          // className="align-top"
+          onClick={(e) => {
+            // e.stopPropagation();
+          }}
+        >
+          <UText />
+        </div>
+        <Handle
+          type="source"
+          position={Position.Left}
+          id="l"
+          isConnectable={isConnectable}
+        >
+          {/* <ArrowkeyBtn text="←" /> */}
+        </Handle>
+        <Handle
+          // type="source"
+          position={Position.Right}
+          id="r"
+          isConnectable={isConnectable}
+        >
+          {/* <ArrowkeyBtn text="→" /> */}
+        </Handle>
+        <Handle
+          // type="source"
+          position={Position.Bottom}
+          id="b"
+          isConnectable={isConnectable}
+        >
+          {/* <ArrowkeyBtn text="↓" /> */}
+        </Handle>
+      </motion.div>
+    </>
   );
 }
 
-export default TextUpdaterNode;
+export default memo(TextUpdaterNode);
 
 // const styles =
 //   text-updater-node
