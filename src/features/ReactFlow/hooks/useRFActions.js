@@ -1,10 +1,11 @@
 import useFocusNode from "../../../hooks/useFocusNode";
 import useKeyActions from "../../../hooks/useKeyActions";
 import { getNbrsByHandle } from "../util/RFUtils.js";
+import { useReactFlow } from "reactflow";
 
 const useRFActions = (
-  selectedNode,
-  setSelectedNode,
+  selectedNodeId,
+  setSelectedNodeId,
   reactFlowInstance,
   nodes
 ) => {
@@ -21,24 +22,33 @@ const useRFActions = (
   useKeyActions(keyActionsConfig);
 
   const handleDirection = (directionKey) => {
+    const selectedNode = reactFlowInstance.getNode(selectedNodeId);
+    selectedNode.selected = false;
     const neighbours = getNbrsByHandle(
-      selectedNode,
+      selectedNodeId,
       directionKey,
       reactFlowInstance
     );
-    // console.log(selectedNode);
+    // console.log(selectedNodeId);
     // console.log("ne", neighbours.);
     const first_neighbour = Object.keys(neighbours)[0];
     console.log("first_neighbour", first_neighbour);
-    useFocus(first_neighbour); // TODO_I avoid? - 22.05
+    switch (first_neighbour) {
+      case "1":
+        useFocus(first_neighbour, -600);
+        break;
+      default:
+        useFocus(first_neighbour);
+        break;
+    }
     if (first_neighbour) {
-      setSelectedNode(first_neighbour);
+      setSelectedNodeId(first_neighbour);
     }
   };
 
   const customActionA = () => {
     console.log("Custom action A triggered");
-    const node = reactFlowInstance.getNode(selectedNode);
+    const node = reactFlowInstance.getNode(selectedNodeId);
     if (node) {
       node.data.initialdimensions = {
         width: node.width,

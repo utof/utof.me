@@ -93,6 +93,7 @@ function RFNoContext() {
   let prevNode = "0";
   const handleNodeClick = useCallback((event, node) => {
     setSelectedNodeId(node.id);
+    // node.selected = true;
     console.log("node clicked", node);
     // remember the previous node and if its the same then dont do anything
     if (prevNode === node.id) {
