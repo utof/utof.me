@@ -114,7 +114,7 @@ function TextUpdaterNode({
         animate={{
           scale: isExpanded ? scaleFactor : 1,
           width: isExpanded ? 400 : dimensions.width,
-          translateX: isExpanded ? -dimensions.width / 2 : 0,
+          translateX: isExpanded ? -dimensions.width / 2 : 0, // use translate(-50%, -50%) instead
         }}
       >
         <Handle position={Position.Top} id="t" isConnectable={isConnectable}>
