@@ -6,7 +6,7 @@ function uText() {
     // text-ellipsis overflow-hidden
     <div
       className="text-xs m-2 text-black text-left"
-      style={{ position: "relative" }}
+      style={{ position: "relative", wordBreak: "break-word" }}
     >
       {/* <div className={styles.overlay}></div> */}
 

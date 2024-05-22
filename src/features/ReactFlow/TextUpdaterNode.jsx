@@ -6,6 +6,7 @@ import {
   useReactFlow,
   NodeResizer,
   NodeToolbar,
+  NodeResizeControl,
 } from "reactflow";
 
 import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
@@ -39,14 +40,14 @@ function TextUpdaterNode({ isConnectable, selected, data }) {
 
   return (
     <>
-      <NodeResizer // TODO p3 use NodeResizeControl instead of NodeResizer
+      <NodeResizeControl // TODO p3 use NodeResizeControl instead of NodeResizer
         color="#ff0071"
         isVisible={selected}
         // isVisible={true}
         // handleStyle={{ width: 300, height: 300 }}
         minWidth={100}
         minHeight={100}
-        // style={}
+        // style={{ width: 100, height: 100 }}
       />
       <NodeToolbar isVisible={selected} position={Position.Top}>
         <ArrowkeyBtn text="↑" />
@@ -91,13 +92,6 @@ function TextUpdaterNode({ isConnectable, selected, data }) {
           scale: isExpanded ? scaleFactor : 1,
           width: isExpanded ? 400 : dimensions.width,
           translateX: isExpanded ? -dimensions.width / 2 : 0,
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowUp") {
-            // handleTransitionToNode();
-            // do nothing (return nothing) below
-            return;
-          }
         }}
       >
         <Handle position={Position.Top} id="t" isConnectable={isConnectable}>

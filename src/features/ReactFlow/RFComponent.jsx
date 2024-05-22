@@ -32,15 +32,15 @@ function RFNoContext() {
     onConnect,
   } = useRFBoilerplate();
   useRFActions(selectedNode, setSelectedNode, reactFlowInstance, nodes);
-  const centerNode = nodes.find((node) => node.id === "0");
+  const centerNode = useMemo(() => nodes.find((node) => node.id === "0"));
 
   const { dimensions, divRef, isInitialized } = useDimensions();
 
   const defaultViewport = useMemo(() => {
     // TODO_I get from  reactflowinstance ??? - 20.05
     return {
-      x: centerNode.position.x + dimensions.width / 2 - 200 / 2, // TODO make find the dimensions of div from parents
-      y: centerNode.position.y + dimensions.height / 2 - 200 / 2, // TOOD find the dims of the node
+      x: centerNode.position.x + dimensions.width / 2 - centerNode.width / 2, // TODO make find the dimensions of div from parents
+      y: centerNode.position.y + dimensions.height / 2 - centerNode.height / 2, // TOOD find the dims of the node
       zoom: 1,
     };
   }, [dimensions]);
