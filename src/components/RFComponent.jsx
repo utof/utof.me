@@ -25,6 +25,23 @@ const rfStyle = {
 };
 const nodeTypes = { textUpdater: TextUpdaterNode };
 
+const useKeyActions = (keyActionsConfig) => {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const action = keyActionsConfig[event.key];
+      if (action) {
+        event.preventDefault();
+        action();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [keyActionsConfig]);
+};
+
 function RFNoContext() {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedNode, setSelectedNode] = useState("0");
@@ -70,28 +87,30 @@ function RFNoContext() {
     // Users can add more keys and actions here
   };
 
-  const handleKeyActions = (keyActions = keyActionsConfig) => {
-    const handleKeyDown = (event) => {
-      const action = keyActions[event.key];
-      if (action) {
-        event.preventDefault();
-        action();
-      }
-    };
+  useKeyActions(keyActionsConfig);
 
-    // Example custom actions
+  // const handleKeyActions = (keyActions = keyActionsConfig) => {
+  //   const handleKeyDown = (event) => {
+  //     const action = keyActions[event.key];
+  //     if (action) {
+  //       event.preventDefault();
+  //       action();
+  //     }
+  //   };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  };
+  //   // Example custom actions
+
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // };
 
   // Inside your component
-  useEffect(() => {
-    const cleanup = handleKeyActions();
-    return () => cleanup();
-  }, [selectedNode, edges, reactFlowInstance]); // TODO_I  why it made edges a dependency? - 20.05
+  // useEffect(() => {
+  //   const cleanup = handleKeyActions();
+  //   return () => cleanup();
+  // }, [selectedNode, edges, reactFlowInstance]); // TODO_I  why it made edges a dependency? - 20.05
 
   const handleWheel = (event) => {
     // console.log(event);
