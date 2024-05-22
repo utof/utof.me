@@ -5,6 +5,7 @@ import ReactFlow, {
   applyNodeChanges,
   MiniMap,
   ReactFlowProvider,
+  Panel,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -12,6 +13,9 @@ import TextUpdaterNode from "./TextUpdaterNode.jsx";
 import useDimensions from "../hooks/useDimensions.jsx";
 import useFocusNode from "../hooks/useFocusNode.jsx";
 import { saveToJsonFile } from "../util/rfdatasaver.js";
+import initialData from "../util/react-flow-data.json";
+const initialNodes = initialData.nodes;
+const initialEdges = initialData.edges;
 // import { getEdgesByHandle, getNbrsByHandle } from "../util/elementgetters.js";
 
 const rfStyle = {
@@ -126,7 +130,7 @@ function RFNoContext() {
             data: { value: 123 },
           };
           const updatedNodes = [...nds, newNode];
-          saveToJsonFile(updatedNodes, edges);
+          // saveToJsonFile(updatedNodes, edges);
           return updatedNodes;
         });
       } else {
@@ -201,7 +205,11 @@ function RFNoContext() {
           zoomOnDoubleClick={false}
           style={rfStyle}
           connectionMode="loose"
-        />
+        >
+          <Panel>
+            <button onClick={() => saveToJsonFile(nodes, edges)}>Save</button>
+          </Panel>
+        </ReactFlow>
       )}
 
       {/* <button onClick={() => console.log(nodes, edges)}>Log</button> */}
@@ -220,71 +228,69 @@ function RFComponent({ width = "100%", height = "100%" }) {
 
 export default RFComponent;
 
-const initialNodes = [
-  {
-    id: "0",
-    type: "textUpdater",
-    position: { x: 0, y: 0 },
-    data: { value: 0 },
-    selected: false,
-  },
-  {
-    id: "1",
-    type: "textUpdater",
-    position: { x: -1000, y: 0 },
-    data: { value: 1 },
-  },
-  {
-    id: "2",
-    type: "textUpdater",
-    position: { x: 1000, y: 0 },
-    data: { value: 2 },
-  },
-  {
-    id: "3",
-    type: "textUpdater",
-    position: { x: 0, y: -1000 },
-    data: { value: 3 },
-  },
-  {
-    id: "4",
-    type: "textUpdater",
-    position: { x: 0, y: 1000 },
-    data: { value: 4 },
-  },
-];
+// const initialNodes = [
+//   {
+//     id: "0",
+//     type: "textUpdater",
+//     position: { x: 0, y: 0 },
+//     data: { value: 0 },
+//     selected: false,
+//   },
+//   {
+//     id: "1",
+//     type: "textUpdater",
+//     position: { x: -1000, y: 0 },
+//     data: { value: 1 },
+//   },
+//   {
+//     id: "2",
+//     type: "textUpdater",
+//     position: { x: 1000, y: 0 },
+//     data: { value: 2 },
+//   },
+//   {
+//     id: "3",
+//     type: "textUpdater",
+//     position: { x: 0, y: -1000 },
+//     data: { value: 3 },
+//   },
+//   {
+//     id: "4",
+//     type: "textUpdater",
+//     position: { x: 0, y: 1000 },
+//     data: { value: 4 },
+//   },
+// ];
 
-const initialEdges = [
-  {
-    id: "edge-0-1",
-    source: "0",
-    target: "1",
-    sourceHandle: "l",
-    targetHandle: "r",
-  },
-  {
-    id: "edge-0-2",
-    source: "0",
-    target: "2",
-    sourceHandle: "r",
-    targetHandle: "l",
-  },
-  {
-    id: "edge-0-3",
-    source: "0",
-    target: "3",
-    sourceHandle: "t",
-    targetHandle: "b",
-  },
-  {
-    id: "edge-0-4",
-    source: "0",
-    target: "4",
-    // animated: true,
-    sourceHandle: "b",
-    targetHandle: "t",
-  },
-];
+// const initialEdges = [
+//   {
+//     id: "edge-0-1",
+//     source: "0",
+//     target: "1",
+//     sourceHandle: "l",
+//     targetHandle: "r",
+//   },
+//   {
+//     id: "edge-0-2",
+//     source: "0",
+//     target: "2",
+//     sourceHandle: "r",
+//     targetHandle: "l",
+//   },
+//   {
+//     id: "edge-0-3",
+//     source: "0",
+//     target: "3",
+//     sourceHandle: "t",
+//     targetHandle: "b",
+//   },
+//   {
+//     id: "edge-0-4",
+//     source: "0",
+//     target: "4",
+//     // animated: true,
+//     sourceHandle: "b",
+//     targetHandle: "t",
+//   },
+// ];
 const centerNode = initialNodes.find((node) => node.id === "0");
-
-// export { initialNodes, initialEdges };
