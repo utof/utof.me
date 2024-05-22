@@ -1,6 +1,5 @@
 import "./App.css";
-import DnDFlow from "./components/DNDFlow.jsx";
-import RFcomponent from "./components/RFComponent.jsx";
+import RFcomponent from "./features/ReactFlow/RFComponent.jsx";
 import { motion } from "framer-motion";
 import { css } from "@emotion/css";
 

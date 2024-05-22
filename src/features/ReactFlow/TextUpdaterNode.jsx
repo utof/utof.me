@@ -9,8 +9,8 @@ import {
 } from "reactflow";
 
 import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
-import UText from "./UText.jsx";
-import "../styles/kbbtn.css";
+import UText from "../../components/UText.jsx";
+import "../../styles/kbbtn.css";
 
 // TODO in the future: generalize this node
 
