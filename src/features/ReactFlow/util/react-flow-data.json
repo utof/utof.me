@@ -4,15 +4,20 @@
       "id": "0",
       "type": "textUpdater",
       "position": {
-        "x": 0,
-        "y": 0
+        "x": -5,
+        "y": 5
       },
       "data": {
         "value": 0
       },
       "selected": false,
       "width": 200,
-      "height": 200
+      "height": 200,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": -5,
+        "y": 5
+      }
     },
     {
       "id": "1",
@@ -25,7 +30,8 @@
         "value": 1
       },
       "width": 200,
-      "height": 200
+      "height": 200,
+      "selected": false
     },
     {
       "id": "2",
@@ -65,11 +71,88 @@
       },
       "width": 200,
       "height": 200
+    },
+    {
+      "id": "5",
+      "type": "textUpdater",
+      "position": {
+        "x": -1925.5,
+        "y": -269
+      },
+      "data": {
+        "value": 123
+      },
+      "width": 200,
+      "height": 200,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1925.5,
+        "y": -269
+      },
+      "dragging": false
+    },
+    {
+      "id": "6",
+      "type": "textUpdater",
+      "position": {
+        "x": -2196.5,
+        "y": -5
+      },
+      "data": {
+        "value": 123
+      },
+      "width": 200,
+      "height": 200,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -2196.5,
+        "y": -5
+      },
+      "dragging": false
+    },
+    {
+      "id": "7",
+      "type": "textUpdater",
+      "position": {
+        "x": -1926.5,
+        "y": 261
+      },
+      "data": {
+        "value": 123
+      },
+      "width": 200,
+      "height": 200,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1926.5,
+        "y": 261
+      },
+      "dragging": false
+    },
+    {
+      "id": "8",
+      "type": "textUpdater",
+      "position": {
+        "x": -1648.5,
+        "y": -2
+      },
+      "data": {
+        "value": 123
+      },
+      "width": 200,
+      "height": 200,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -1648.5,
+        "y": -2
+      },
+      "dragging": false
     }
   ],
   "edges": [
     {
       "id": "edge-0-1",
+      "type": "custom",
       "source": "0",
       "target": "1",
       "sourceHandle": "l",

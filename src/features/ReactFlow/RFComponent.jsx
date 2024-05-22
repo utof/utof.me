@@ -5,6 +5,7 @@ import "reactflow/dist/style.css";
 import useDimensions from "../../hooks/useDimensions.jsx";
 import { saveToJsonFile } from "../../util/rfdatasaver.js";
 import TextUpdaterNode from "./TextUpdaterNode.jsx";
+import CustomEdge from "./CustomEdge.jsx";
 import useRFActions from "./hooks/useRFActions.js";
 import useRFBoilerplate from "./hooks/useRFBoilerplate.js";
 
@@ -16,6 +17,7 @@ const rfStyle = {
   height: "100%",
 };
 const nodeTypes = { textUpdater: TextUpdaterNode };
+const edgeTypes = { custom: CustomEdge };
 
 function RFNoContext() {
   const {
@@ -123,6 +125,7 @@ function RFNoContext() {
           onConnect={onConnect}
           onPane
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onPaneClick={handlePaneClick}
           onNodeClick={handleNodeClick}
           onInit={setReactFlowInstance} // TODO  check docs but how do i make it equal setReactFlowInstance but run a sideeffect?
