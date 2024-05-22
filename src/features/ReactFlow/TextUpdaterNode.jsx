@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useRef, memo } from "react";
+import { useState, useRef, memo, useEffect } from "react";
 import {
   Handle,
   Position,
@@ -15,28 +15,36 @@ import "../../styles/kbbtn.css";
 
 // TODO in the future: generalize this node
 
-function TextUpdaterNode({ isConnectable, selected, data }) {
+function TextUpdaterNode({
+  id,
+  isConnectable,
+  selected,
+  width = 200,
+  height = 200,
+  data,
+}) {
   // const store = useStoreApi();
+  const [startedDragging, setStartedDragging] = useState(false);
   const { setCenter } = useReactFlow(); // TODO_I gotta put elementgetters b4 this - 21.05
   const divRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const scaleFactor = 2;
   const hoverFactor = 1.03;
-  const dimensions = { width: 200, height: 200 }; // TODO useDimensions hook to read the size of the screen and set w n h  for this thing
+  const dimensions = { width, height }; // TODO useDimensions hook to read the size of the screen and set w n h  for this thing
+
   // const { width, height } = data.initialdimensions;
   // const _disableAnimations = false;
 
-  const handleClick = () => {
-    // setIsExpanded(!isExpanded);
-    if (divRef.current) {
-      // divRef.current.focus();
-      divRef.current.style.border = "2px solid #005eff";
-      if (selected) {
-        divRef.current.style.border = "2px solid #ff0071";
-      }
-    }
-  };
+  // const handleClick = () => {
+  //   // setIsExpanded(!isExpanded);
+  //   if (divRef.current) {
+  //     // divRef.current.focus();
+  //     divRef.current.style.border = "2px solid #005eff";
+  //     if (selected) {
+  //       divRef.current.style.border = "2px solid #ff0071";}
+  //   }
+  // };
 
   return (
     <>
@@ -47,6 +55,12 @@ function TextUpdaterNode({ isConnectable, selected, data }) {
         // handleStyle={{ width: 300, height: 300 }}
         minWidth={100}
         minHeight={100}
+        style={{ width: 10, height: 10 }}
+        onResize={() => {
+          if (!startedDragging) {
+            setStartedDragging(true);
+          }
+        }}
         // style={{ width: 100, height: 100 }}
       />
       <NodeToolbar isVisible={selected} position={Position.Top}>
@@ -63,7 +77,15 @@ function TextUpdaterNode({ isConnectable, selected, data }) {
       </NodeToolbar>
       <div
         ref={divRef} // TODO_I stop fucking screaming at me for using ref inside motion.div (check console)
-        style={{ width: "100%", height: "100%", overflow: "hidden" }}
+        style={
+          !startedDragging
+            ? {
+                width: dimensions.width,
+                height: dimensions.height,
+                overflow: "hidden",
+              }
+            : { width: "100%", height: "100%", overflow: "hidden" }
+        }
         // style={{width: dimensions.width, height: dimensions.height, overflow: "hidden"}}
         // drag // TOOD make this work with react-flow
         className="bg-white rounded-3xl p-4 "
@@ -72,7 +94,8 @@ function TextUpdaterNode({ isConnectable, selected, data }) {
         // onFocus={() => {
         //   setIsExpanded(true);
         // }} // TOOD weird bug
-        onClick={handleClick}
+
+        // onClick={handleClick}
         // whileInView={{ scale: 1.2 }}
         whileHover={{
           scale: isExpanded ? scaleFactor * hoverFactor : hoverFactor,
@@ -104,7 +127,7 @@ function TextUpdaterNode({ isConnectable, selected, data }) {
             // e.stopPropagation();
           }}
         >
-          <UText />
+          <UText id={id} />
         </div>
         <Handle
           type="source"

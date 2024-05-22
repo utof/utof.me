@@ -1,40 +1,31 @@
 import { css } from "@emotion/css";
 import React from "react";
 
-function uText() {
-  return (
-    // text-ellipsis overflow-hidden
-    <div
-      className="text-xs m-2 text-black text-left"
-      style={{ position: "relative", wordBreak: "break-word" }}
-    >
-      {/* <div className={styles.overlay}></div> */}
+import { content } from "../features/ReactFlow/util/react-flow-data.jsx";
+const containerStyles = css`
+  position: relative;
+  word-break: break-word;
+  margin: 8px; /* Equivalent to m-2 */
+  color: black; /* Equivalent to text-black */
+  text-align: left; /* Equivalent to text-left */
+  font-size: 12px; /* Equivalent to text-xs */
 
-      <h1 className="text-2xl mb-4 text-center">Hkjh flkjo</h1>
-      <p className="text-m font-light mb-3">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
-      </p>
-      <p className="text-m font-light" style={{ wordBreak: "break-word" }}>
-        The quick brown fox jumps ofver the layuz
-        {/* doblasdfjklasdfjkl;adfjkls;asdfjkl;adjkl;fsasdjklf;klj;dafsklj;adfsklj;sdflk;jfdasjkl;asdflk;
-        asl;lja ks;lkjasjkl;sfadkl;asd k;ljasd;ljksadfjl;ksdaf kl;sad;klj
-        dsfk;jl asdklj;fasjkl; asdf;jkla dfsjkl;fsdklj;
-        fsd;lkafsdklj;adfkls;jadf jkl;lkdfs;ljk;fds */}
-      </p>
-    </div>
-  );
+  h1 {
+    font-size: 24px; /* Equivalent to text-2xl */
+    margin-bottom: 16px; /* Equivalent to mb-4 */
+    text-align: center;
+  }
+
+  p {
+    font-size: 16px; /* Equivalent to text-m */
+    font-weight: 300; /* Equivalent to font-light */
+    margin-bottom: 12px; /* Equivalent to mb-3 */
+    word-break: break-word;
+  }
+`;
+
+function uText({ id }) {
+  return <div className={containerStyles}>{content[id]}</div>;
 }
-
-// const styles = {
-//   overlay: css`
-//     position: absolute;
-//     bottom: 0;
-//     right: 0;
-//     width: 100px;
-//     height: 16px;
-//     /* background: linear-gradient(to right, #ffffff3e, #ffffff); */
-//     z-index: 100;
-//   `,
-// };
 
 export default uText;
