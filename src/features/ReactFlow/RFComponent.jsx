@@ -21,8 +21,8 @@ function RFNoContext() {
   const {
     reactFlowInstance,
     setReactFlowInstance,
-    selectedNode,
-    setSelectedNode,
+    selectedNodeId,
+    setSelectedNodeId,
     nodes,
     setNodes,
     edges,
@@ -31,7 +31,7 @@ function RFNoContext() {
     onEdgesChange,
     onConnect,
   } = useRFBoilerplate();
-  useRFActions(selectedNode, setSelectedNode, reactFlowInstance, nodes);
+  useRFActions(selectedNodeId, setSelectedNodeId, reactFlowInstance, nodes);
   const centerNode = useMemo(() => nodes.find((node) => node.id === "0"));
 
   const { dimensions, divRef, isInitialized } = useDimensions();
@@ -66,6 +66,7 @@ function RFNoContext() {
   const handlePaneClick = useCallback(
     (event) => {
       event.preventDefault();
+      // setSelectedNode(null);
       if (
         reactFlowInstance &&
         window.clickTime &&
@@ -91,7 +92,8 @@ function RFNoContext() {
 
   let prevNode = "0";
   const handleNodeClick = useCallback((event, node) => {
-    setSelectedNode(node.id);
+    setSelectedNodeId(node.id);
+    console.log("node clicked", node);
     // remember the previous node and if its the same then dont do anything
     if (prevNode === node.id) {
       console.log("same node clicked again");
@@ -129,6 +131,7 @@ function RFNoContext() {
           zoomOnDoubleClick={false}
           style={rfStyle}
           connectionMode="loose"
+          minZoom={0.1}
         >
           <Panel>
             <button onClick={() => saveToJsonFile(nodes, edges)}>Save</button>

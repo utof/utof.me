@@ -9,7 +9,7 @@ const initialEdges = initialData.edges;
 
 function useRFBoilerplate() {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [selectedNode, setSelectedNode] = useState("0");
+  const [selectedNodeId, setSelectedNodeId] = useState("0");
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
 
@@ -28,8 +28,8 @@ function useRFBoilerplate() {
   return {
     reactFlowInstance,
     setReactFlowInstance,
-    selectedNode,
-    setSelectedNode,
+    selectedNodeId,
+    setSelectedNodeId,
     nodes,
     setNodes,
     edges,

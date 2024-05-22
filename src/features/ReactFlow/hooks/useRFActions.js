@@ -26,9 +26,10 @@ const useRFActions = (
       directionKey,
       reactFlowInstance
     );
-    console.log(JSON.stringify("ne", neighbours));
-    console.log(neighbours);
+    // console.log(selectedNode);
+    // console.log("ne", neighbours.);
     const first_neighbour = Object.keys(neighbours)[0];
+    console.log("first_neighbour", first_neighbour);
     useFocus(first_neighbour); // TODO_I avoid? - 22.05
     if (first_neighbour) {
       setSelectedNode(first_neighbour);
