@@ -12,9 +12,9 @@ import ArrowkeyBtn from "./ArrowkeyBtn.jsx";
 import UText from "./UText.jsx";
 import "../styles/kbbtn.css";
 
-// TODO in the future: generalize this node.
+// TODO in the future: generalize this node
 
-function TextUpdaterNode({ isConnectable, selected }) {
+function TextUpdaterNode({ isConnectable, selected, data }) {
   // const store = useStoreApi();
   const { setCenter } = useReactFlow(); // TODO_I gotta put elementgetters b4 this - 21.05
   const divRef = useRef(null);
@@ -23,10 +23,11 @@ function TextUpdaterNode({ isConnectable, selected }) {
   const scaleFactor = 2;
   const hoverFactor = 1.03;
   const dimensions = { width: 200, height: 200 }; // TODO useDimensions hook to read the size of the screen and set w n h  for this thing
-  const _disableAnimations = false;
+  // const { width, height } = data.initialdimensions;
+  // const _disableAnimations = false;
 
   const handleClick = () => {
-    setIsExpanded(!isExpanded);
+    // setIsExpanded(!isExpanded);
     if (divRef.current) {
       // divRef.current.focus();
       divRef.current.style.border = "2px solid #005eff";
@@ -59,9 +60,10 @@ function TextUpdaterNode({ isConnectable, selected }) {
       <NodeToolbar isVisible={selected} position={Position.Bottom}>
         <ArrowkeyBtn text="↓" />
       </NodeToolbar>
-      <motion.div
+      <div
         ref={divRef} // TODO_I stop fucking screaming at me for using ref inside motion.div (check console)
         style={{ width: "100%", height: "100%", overflow: "hidden" }}
+        // style={{width: dimensions.width, height: dimensions.height, overflow: "hidden"}}
         // drag // TOOD make this work with react-flow
         className="bg-white rounded-3xl p-4 "
         // className={`bg-white rounded-3xl ${kkjhasdf ? "flex-row" : "Awsd"} p-4` }
@@ -69,7 +71,6 @@ function TextUpdaterNode({ isConnectable, selected }) {
         // onFocus={() => {
         //   setIsExpanded(true);
         // }} // TOOD weird bug
-        // tabIndex={-1}
         onClick={handleClick}
         // whileInView={{ scale: 1.2 }}
         whileHover={{
@@ -135,7 +136,7 @@ function TextUpdaterNode({ isConnectable, selected }) {
         >
           {/* <ArrowkeyBtn text="↓" /> */}
         </Handle>
-      </motion.div>
+      </div>
     </>
   );
 }

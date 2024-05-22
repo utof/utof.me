@@ -34,37 +34,52 @@ function RFNoContext() {
   const { dimensions, divRef, isInitialized } = useDimensions();
   const useFocus = useFocusNode();
 
-  const handleKeyDirection = () => {
-    // TODO_I how to move this out of here? - 20.05
-    const handleKeyDown = (event) => {
-      let directionKey = null;
+  const handleDirection = (directionKey) => {
+    const neighbours = getNbrsByHandle(selectedNode, directionKey);
+    console.log(JSON.stringify("ne", neighbours));
+    console.log(neighbours);
+    const first_neighbour = Object.keys(neighbours)[0];
+    useFocus(first_neighbour); // TODO_I avoid? - 22.05
+    if (first_neighbour) {
+      setSelectedNode(first_neighbour);
+    }
+  };
 
-      switch (event.key) {
-        case "ArrowLeft":
-          directionKey = "l";
-          break;
-        case "ArrowRight":
-          directionKey = "r";
-          break;
-        case "ArrowUp":
-          directionKey = "t";
-          break;
-        case "ArrowDown":
-          directionKey = "b";
-          break;
-        default:
-          return;
-      }
-      event.preventDefault(); // Prevent the default scroll behavior on the reactFlowWrapper
-      const neighbours = getNbrsByHandle(selectedNode, directionKey);
-      console.log(JSON.stringify("ne", neighbours));
-      console.log(neighbours);
-      const first_neighbour = Object.keys(neighbours)[0]; // TODO p4 generalize to multiple nodes when multiple edges
-      useFocus(first_neighbour); // TODO_I why is this bad? - 20.05
-      if (first_neighbour) {
-        setSelectedNode(first_neighbour);
+  const customActionA = () => {
+    console.log("Custom action A triggered");
+    reactFlowInstance.getNode(selectedNode).data.initialdimensions = {
+      width: reactFlowInstance.getNode(selectedNode).width,
+      height: reactFlowInstance.getNode(selectedNode).height,
+    };
+    console.log(nodes);
+    // Add the logic for custom action A
+  };
+
+  const customActionB = () => {
+    console.log("Custom action B triggered");
+    // Add the logic for custom action B
+  };
+
+  const keyActionsConfig = {
+    ArrowLeft: () => handleDirection("l"),
+    ArrowRight: () => handleDirection("r"),
+    ArrowUp: () => handleDirection("t"),
+    ArrowDown: () => handleDirection("b"),
+    1: () => customActionA(), // Example user-defined action
+    2: () => customActionB(), // Another user-defined action
+    // Users can add more keys and actions here
+  };
+
+  const handleKeyActions = (keyActions = keyActionsConfig) => {
+    const handleKeyDown = (event) => {
+      const action = keyActions[event.key];
+      if (action) {
+        event.preventDefault();
+        action();
       }
     };
+
+    // Example custom actions
 
     window.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -72,8 +87,9 @@ function RFNoContext() {
     };
   };
 
+  // Inside your component
   useEffect(() => {
-    const cleanup = handleKeyDirection();
+    const cleanup = handleKeyActions();
     return () => cleanup();
   }, [selectedNode, edges, reactFlowInstance]); // TODO_I  why it made edges a dependency? - 20.05
 
@@ -134,12 +150,23 @@ function RFNoContext() {
           return updatedNodes;
         });
       } else {
-        console.log("edges", getEdgesByHandle(selectedNode, "b"));
         window.clickTime = Date.now();
+        // console.log(event);
       }
     },
     [reactFlowInstance]
   );
+  let prevNode = "0";
+  const onNodeClick = useCallback((event, node) => {
+    setSelectedNode(node.id);
+    // remember the previous node and if its the same then dont do anything
+    if (prevNode === node.id) {
+      console.log("same node clicked again");
+    } else {
+      // useFocus(node.id); // pan_to_node
+      prevNode = node.id;
+    }
+  }, []);
 
   const getEdgesByNode = (nodeId) => {
     // TODO_I how to move them to util/elementgetters.js ?
@@ -198,6 +225,7 @@ function RFNoContext() {
           onPane
           nodeTypes={nodeTypes}
           onPaneClick={onPaneClick}
+          onNodeClick={onNodeClick}
           onInit={setReactFlowInstance} // TODO  check docs but how do i make it equal setReactFlowInstance but run a sideeffect?
           defaultViewport={defaultViewport}
           zoomOnScroll={false}
